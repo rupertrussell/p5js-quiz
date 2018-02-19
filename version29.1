@@ -1,0 +1,354 @@
+// References
+// Tutorial at: http://coursescript.com/notes/interactivecomputing/interactivity/
+// Tutorial at: http://coursescript.com/notes/interactivecomputing/index.html
+// https://creative-coding.decontextualize.com/mobile/
+// https://www.kadenze.com/courses/introduction-to-programming-for-the-visual-arts-with-p5-js/info
+// https://forum.processing.org/two/discussion/19914/ios-mousex-mousey-works-mouseispressed-doesn-t
+// Note: If you want the program to work properly with a touch screen you must handel the
+// function touchStarted()   and  function touchEnded() events correctly 
+// function mousePressed()  does not work adequatly on its own for a touch screen.
+
+// Alpha Version
+// Please send feedback to @rupertrussell  #UATP5JS
+var textToDisplay = '';
+var clickCount=0;
+var version = 29.1;
+var questionNumber = 0;
+var myFont;
+var questionText = [];
+var questioAnswer = [];
+var distractor1 = [];
+var distractor2 = [];
+var distractor3 = [];
+var distractor4 = [];
+var picture = [];
+var itemPicture =[];
+var backgroundColor;
+var isOverCircleA;
+var isOverCircleB;
+var isOverCircleC;
+var isOverCircleD;
+var firstDraw = true;
+var correctAnswers = 0;
+var wrongAnswers = 0;
+var count = 0;
+var numberOFQuestions = 3;
+
+
+questionText[0] = 'How long would it take run out of water at full pump capacity? ';
+questioAnswer[0] = 'A';
+distractor1[0] = 'A) 0:37 (Correct Answer)';
+distractor2[0] = 'B) 0:57';
+distractor3[0] = 'C) 1:37';
+distractor4[0] = 'D) 2:37';
+picture[0] = 'false';
+itemPicture[0] = '';
+
+questionText[1] = 'How high is the truck? ';
+questioAnswer[1] = 'B';
+distractor1[1] = 'A) 2.46 metres';
+distractor2[1] = '     2.96 metres (Correct Answer)';
+distractor3[1] = '     3.16 metres';
+distractor4[1] = '     3.26 metres';
+picture[1] = 'false';
+itemPicture[1] = '';
+
+questionText[2] = 'Diesel Fuel Tank Capacity? ';
+questioAnswer[2] = 'C';
+distractor1[2] = '     190 litres';
+distractor2[2] = '     195 litres';
+distractor3[2] = '     200 litres (Correct Answer)';
+distractor4[2] = '     250 litres';
+picture[2] = 'false';
+itemPicture[2] = '';
+
+questionText[3] = 'In what locker would you find 38mm Duraline?';
+questioAnswer[3] = 'D';
+distractor1[3] = '     Off Side 2';
+distractor2[3] = '     Off Side 3';
+distractor3[3] = '     Near Side 2';
+distractor4[3] = '     Near Side 3 (Correct Answer)';
+picture[3] = 'true';
+itemPicture[3] = 'images/38mm2.png';
+
+questionText[4] = 'In what locker would you find 38mm Duraline?';
+questioAnswer[4] = 'D';
+distractor1[4] = '     Off Side 2';
+distractor2[4] = '     Off Side 3';
+distractor3[4] = '     Near Side 2';
+distractor4[4] = '     Near Side 3 (Correct Answer)';
+picture[4] = 'true';
+itemPicture[4] = 'images/38mm2.png';
+
+questionText[5] = 'In what locker would you find 38mm Duraline?';
+questioAnswer[5] = 'D';
+distractor1[5] = '     Off Side 2';
+distractor2[5] = '     Off Side 3';
+distractor3[5] = '     Near Side 2';
+distractor4[5] = '     Near Side 3 (Correct Answer)';
+picture[5] = 'true';
+itemPicture[5] = 'images/38mm2.png';
+
+
+function setup() {
+  createCanvas(1024, 700);
+  myFont = loadFont('arial.ttf');
+  
+  textSize(36);
+  textFont(myFont);
+  fill('#ED225D');
+  preLoadAllImages();
+  
+}
+// ---------------------------- Start of Draw ------------------------------
+function draw() {
+  text('QNum ' +   questionNumber + ' clickCount = ' + clickCount + ' version ' + version , 150, 260+170); 
+
+  
+  // background(0);
+  stroke(0);
+  text('                                                         Count: ' + count , 10, 50+70);	
+  text('                                                         ver: ' + version , 10, 50+70+70);	
+  displayQuestion(questionNumber);
+  drawButtons();
+  
+  checkIfOverCircleA();
+  checkIfOverCircleB();
+  checkIfOverCircleC();
+  checkIfOverCircleD();
+  count = count + 1;
+  text(textToDisplay, 50, 60);
+}  // end draw() --------------------------------------
+
+function displayQuestion(qNum){
+  text(questionText[qNum], 10, 120-70);
+  text(distractor1[qNum], 50, 190-70);
+  text(distractor2[qNum], 50, 260-70);
+  text(distractor3[qNum], 50, 330-70);
+  text(distractor4[qNum], 50, 400-70);
+  if(picture[questionNumber]=='true'){
+  image(itemPicture3, 550, 150);
+	 
+	 //  text('                                                         True: ', 10, 50+70+70+70);	
+  }
+  else{
+	//   text('                                                         False: ', 10, 50+70+70+70);	  
+  }
+  
+}
+
+function preLoadAllImages() {
+  itemPicture0 = loadImage(itemPicture[0]);
+  itemPicture1 = loadImage(itemPicture[1]);
+  itemPicture2 = loadImage(itemPicture[2]);
+  itemPicture3 = loadImage(itemPicture[3]);
+}
+
+
+function touchMoved() {
+  //stroke(255);
+  // line(mouseX, mouseY, pmouseX, pmouseY);
+  return false;
+}
+
+function touchStarted() {
+  ellipse(mouseX, mouseY, 15, 15);
+  // prevent default
+  return false;
+}
+
+function touchEnded() {
+  // fill(255,255,0);
+  // ellipse(mouseX, mouseY, 15, 15);
+  // fill('#ED225D');
+  checkAnswers(); 
+  // prevent default
+  return false;
+}
+
+function mousePressed(){
+	checkAnswers();
+} // End mousePressed()
+
+function drawButtons(){
+  //Draw A
+  ellipseMode(CENTER);
+  ellipseMode(RADIUS);
+  strokeWeight(5);
+  if(isOverCircleA == true){
+    fill('#FFFFFF');
+    ellipse(60, 110, 30, 30);
+    cursor(HAND);
+    fill('#ED225D');
+    text('A', 50, 190-70);
+  } else {
+    fill('#ED225D'); 
+    ellipse(60, 110, 30, 30);
+    cursor(ARROW); 
+    fill('#FFFFFF'); 
+    text('A', 50, 190-70);
+  }
+ // fill('#FFFFFF');
+  
+  //Draw B
+  ellipseMode(CENTER);
+  ellipseMode(RADIUS);
+  strokeWeight(5);
+  if(isOverCircleB == true)
+  {
+    fill('#FFFFFF');
+    ellipse(60, 177, 30, 30);
+    cursor(HAND);
+    fill('#ED225D');
+    text('B', 50, 260-70);
+  } else {
+    fill('#ED225D'); 
+    ellipse(60, 177, 30, 30);
+    cursor(ARROW); 
+    fill('#FFFFFF');
+    text('B', 50, 260-70);
+    fill('#ED225D'); 
+  }
+  
+  //Draw C
+  strokeWeight(5);
+  if(isOverCircleC == true){
+    fill('#FFFFFF');
+    ellipse(60, 177+70, 30, 30);
+    cursor(HAND);
+    fill('#ED225D');
+    text('C', 50, 260);
+  } else {
+    fill('#ED225D'); 
+    ellipse(60, 177+70, 30, 30);
+    cursor(ARROW); 
+    fill('#FFFFFF');
+    text('C', 50, 260);
+    fill('#ED225D'); 
+  }
+  
+  //Draw D
+  strokeWeight(5);
+  if(isOverCircleD == true){
+    fill('#FFFFFF');
+    ellipse(60, 177+70+70, 30, 30);
+    cursor(HAND);
+    fill('#ED225D');
+    text('D', 50, 260+70);
+  } else {
+    fill('#ED225D'); 
+    ellipse(60, 177+70+70, 30, 30);
+    cursor(ARROW); 
+    fill('#FFFFFF');
+    text('D', 50, 260+70);
+    fill('#ED225D'); 
+  }
+  
+  text('correctAnswers = ' + correctAnswers + '   wrongAnswers = ' + wrongAnswers, 50, 260+70+70); 
+} // end drawButtons()
+
+
+
+
+function checkIfOverCircleA(){
+  // get distance between mouse and circle A
+  var distance = dist(mouseX, mouseY, 60, 110); 
+  if(distance < 30){
+    isOverCircleA = true;
+  } else {
+    isOverCircleA = false;
+  }
+}
+
+function checkIfOverCircleB(){
+  // get distance between mouse and circle B
+  var distance = dist(mouseX, mouseY, 60, 177); 
+  if(distance < 30){
+    isOverCircleB = true;
+  } else {
+    isOverCircleB = false;
+  }
+}
+
+function checkIfOverCircleC(){
+  // get distance between mouse and circle C
+  var distance = dist(mouseX, mouseY, 60, 177+70); 
+  if(distance < 30){
+    isOverCircleC = true;
+  } else {
+    isOverCircleC = false;
+  }  
+}
+
+function checkIfOverCircleD(){
+  // get distance between mouse and circle D
+  var distance = dist(mouseX, mouseY, 60, 177+70+70); 
+  if(distance < 30){
+    isOverCircleD = true;
+  } else {
+    isOverCircleD = false;
+  }  
+}
+
+function checkAnswers(){
+	 // Check answers -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  
+  if(isOverCircleA == true){
+    if(questioAnswer[questionNumber] == 'A'){
+      correctAnswers = correctAnswers + 1;
+	  textToDisplay= 'A Clicked Correct';
+    }
+    else{
+      wrongAnswers = wrongAnswers + 1;
+	  textToDisplay= 'A Clicked Wrong';
+    }  
+  }
+  
+  if(isOverCircleB == true){
+   if(questioAnswer[questionNumber] == 'B'){
+      correctAnswers = correctAnswers + 1;
+	  textToDisplay= 'B Clicked Correct';
+    }
+    else{
+      wrongAnswers = wrongAnswers + 1;
+	  textToDisplay= 'B Clicked wrong';
+    }  
+  }
+  
+  if(isOverCircleC == true){
+    if(questioAnswer[questionNumber] == 'C'){
+      correctAnswers = correctAnswers + 1;
+	  textToDisplay= 'C Clicked Correct';
+    }
+    else{
+      wrongAnswers = wrongAnswers + 1;
+	  textToDisplay= 'C Clicked wrong';
+    }  
+  }
+  
+  // DDDDDDDDDDDDDDDDDDDDDDD
+  if(isOverCircleD == true){
+    if(questioAnswer[questionNumber] == 'D'){
+      correctAnswers = correctAnswers + 1;
+	  textToDisplay= 'D Clicked Correct';
+    }
+    else{
+      wrongAnswers = wrongAnswers + 1;
+	  text('D Clicked Wrong ', 50, 60);
+    }
+  }
+  
+//  clear();
+  
+  // Wrap around questions
+  if(questionNumber < numberOFQuestions){
+    questionNumber = questionNumber + 1;
+	clear();
+	clickCount = clickCount + 1;
+	  text('             clickCount = ' + clickCount, 150, 260-170);
+  }
+  else{
+    questionNumber = 0;	
+	clear();
+  }	
+} // End CheckAnswers()
